@@ -124,4 +124,11 @@ html, body {
 .black {
 	color: BLACK;
 }
+
+.hideClock {
+	color: WHITE;
+}
+
+.showClock {
+	color: BLACK;
 }

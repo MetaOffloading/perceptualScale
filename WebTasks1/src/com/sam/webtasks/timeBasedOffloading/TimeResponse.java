@@ -90,8 +90,18 @@ public class TimeResponse {
 				Window.alert("Press the spacebar to continue");
 			}
 		} else {
-			if (response != TimeBlock.spaceBarKey) { //increment trial number if a key other than spacebar was pressed
+			if ((response == TimeBlock.matchKey)||(response == TimeBlock.nonMatchKey)) { //increment trial number if one of the 2back keys was pressed
 				TimeBlock.trialNumber++;
+			} else if (response == TimeBlock.revealClockKey) {
+				TimeDisplay.SetClockVisible(true);
+				
+				if (!TimeBlock.clockAlwaysOn) {
+					new Timer() {
+						public void run() {
+							TimeDisplay.SetClockVisible(false);
+						}
+					}.schedule(TimeBlock.clockReveal_msec);
+				}
 			}
 			
 			boolean nBackCorrect = false;
@@ -137,7 +147,7 @@ public class TimeResponse {
 						}.schedule(200);
 					}
 				}
-			} else {
+			} else if ((response==TimeBlock.matchKey)||(response==TimeBlock.nonMatchKey)) {
 				TimeDisplay.focusPanel.setFocus(false);
 		
 				TimeDisplay.stimulusDisplay.setHTML("");

@@ -35,6 +35,7 @@ public class TimeBlock {
 	public static int spaceBarKey = KeyCodes.KEY_SPACE;
 	public static int nonMatchKey = KeyCodes.KEY_Z;
 	public static int matchKey = KeyCodes.KEY_X;
+	public static int revealClockKey = KeyCodes.KEY_C;
 	public static int nBackMatchCorr ; //number of correct 'match' responses
 	public static int nBackNonMatchCorr; //number of correct 'nonmatch' responses
 	public static int nBackTargetsPresented;
@@ -44,6 +45,12 @@ public class TimeBlock {
 	
 	//should offloading be allowed in this block?
 	public static boolean allowOffloading=true;
+	
+	//should clock always be on, or should it be revealable?
+	public static boolean clockAlwaysOn=false;
+	
+	//how long should the clock be revealed for in ms?
+	public static int clockReveal_msec = 1500;
 	
 	//timestamp of beginning of block
 	public static Date blockStart;
@@ -115,6 +122,7 @@ public class TimeBlock {
 		lastTarget=nextTarget;
 		
 		TimeDisplay.clockDisplay.setVisible(clockVisible);
+		TimeDisplay.SetClockVisible(clockAlwaysOn);
 		TimeDisplay.offloadButton.setVisible(offloadButtonVisible);
 		RootPanel.get().add(TimeDisplay.focusPanel);
 		TimeDisplay.waitForSpacebar = true;

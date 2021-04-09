@@ -146,6 +146,7 @@ public class TimeDisplay {
 				PHP.logData("TB_reminderOff", data, false);
 				
 				reminder.cancel();
+				SetClockVisible(TimeBlock.clockAlwaysOn);
 				TimeDisplay.offloadButton.setEnabled(false);
 			}
 			
@@ -179,6 +180,8 @@ public class TimeDisplay {
 	
 	public static final Timer reminder = new Timer() {
 		public void run() {
+			//SetClockVisible(true);
+			clockDisplay.removeStyleName("hideClock");
 			clockDisplay.addStyleName("red");
 			
 			new Timer() {
@@ -188,6 +191,16 @@ public class TimeDisplay {
 			}.schedule(100);
 		}
 	};
+	
+	public static void SetClockVisible(boolean visible) {
+		if (visible) {
+			clockDisplay.removeStyleName("clockHide");
+			clockDisplay.addStyleName("showClock");
+		} else {
+			clockDisplay.removeStyleName("showClock");
+			clockDisplay.addStyleName("hideClock");
+		}
+	}
 	
 	public static int generateDelay() {
 		int delay=0;

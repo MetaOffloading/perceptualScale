@@ -66,13 +66,16 @@ public class SequenceHandler {
 			 * The code here defines the main sequence of events in the experiment *
 			 **********************************************************************/
 			case 1:
+				SequenceHandler.SetPosition(17);
+				SequenceHandler.Next();
+				/*
 				String data = TimeStamp.Now() + ",";
 				data = data + Counterbalance.getFactorLevel("startingCondition") + ",";
 				data = data + Counterbalance.getFactorLevel("buttonPositions") + ",";
 				data = data + Counterbalance.getFactorLevel("buttonColours") + ",";
 				data = data + SessionInfo.prolificExperimentCode;
 				
-				PHP.logData("start", data, true);
+				PHP.logData("start", data, true);*/
 				break;
 			case 2:
 				ClickPage.Run(Instructions.Get(10), "Next");
