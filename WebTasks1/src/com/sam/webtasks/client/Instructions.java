@@ -25,13 +25,17 @@ public class Instructions {
 					+ "with the letter task. You should keep going with the letter task like before. Then, "
 					+ "when the clock gets to the specified time (such as 0:20) you should press the "
 					+ "spacebar again. Keep going with the letter task after this.<br><br>"
-					+ "Please perform both the letter task and the timer task as accurately as possible. "
-					+ "Both tasks are important.<br><br>"
+					+ "The most important thing is to continue the letter task as quickly and as accurately "
+					+ "as possible. It is more important that you pay attention to the letters than the clock. "
+					+ "But you should also try to do the timer task at the same time, if you can.<br><br>"
 					+ "If you press the spacebar within 2 seconds of the instructed time (for example "
 					+ "0:18 to 0:22) this will be counted as correct.";
 			break;
 		case 30:
-			i = "Now let's do some more practice of the task you have just done.<br><br>"
+			i = "In the main experiment you will score one point each time you press the correct button "
+					+ "in the <b>letter</b> task. If your final score is in the top half of participants, you will "
+					+ "receive an aditional bonus payment of £1.<br><br>"
+					+ "Now let's do some more practice of the task you have just done.<br><br>"
 					+ "When you get an instruction to press the spacebar, there will always be a <b>10 "
 					+ "second</b> wait until you should press it.<br><br>";
 			break;
@@ -115,10 +119,8 @@ public class Instructions {
 			break;
 		case 150:
 			i = "You have now completed the experiment. Thank you for taking part.<br><br>"
-					+ "Last of all, we would like you to complete a brief survey about the experiment. "
-					+ "When you have done this, you will receive a link to receive your payment from "
-					+ "the Prolific Academic system.<br><br>Click below to complete the survey:<br><br>"
-					+ "<b><a href=\"https://docs.google.com/forms/d/e/1FAIpQLSeKfIkV4v2KjORr2HvXmNckd_4cK3sOj9NXfIAX6VzbJOR5vA/viewform?usp=sf_link\">"
+					+ "Please click on the link below to receive your payment:"
+					+ "<b><a href=\"https://app.prolific.co/submissions/complete?cc=7EB98BB9\">"
 					+ "CLICK HERE</a></b>";
 			break;
 		}
