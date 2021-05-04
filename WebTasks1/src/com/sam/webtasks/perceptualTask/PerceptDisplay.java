@@ -162,14 +162,24 @@ public class PerceptDisplay {
         leftResponseRectangle.addNodeMouseClickHandler(new NodeMouseClickHandler() {
         	public void onNodeMouseClick(NodeMouseClickEvent event) {
         		PerceptTrial.response = Names.LEFT;
-        		PerceptResponse.Run();
+        		
+        		if (PerceptBlock.getConfidence) {
+        			ConfidenceRating.Run();
+        		} else {
+        			PerceptResponse.Run();
+        		}
         	}
         });
         
         rightResponseRectangle.addNodeMouseClickHandler(new NodeMouseClickHandler() {
         	public void onNodeMouseClick(NodeMouseClickEvent event) {
         		PerceptTrial.response = Names.RIGHT;
-        		PerceptResponse.Run();
+        		
+        		if (PerceptBlock.getConfidence) {
+        			ConfidenceRating.Run();
+        		} else {
+        			PerceptResponse.Run();
+        		}
         	}
         });
 

@@ -12,6 +12,7 @@ import com.sam.webtasks.basictools.Names;
 public class PerceptTrial {
 	public static int correctResponse = Names.LEFT;
 	public static int response = Names.LEFT;
+	public static int confidence = -1;
 	public static boolean correct, lastCorrect = false;
 	public static Date stimOn;
 	public static int RT;

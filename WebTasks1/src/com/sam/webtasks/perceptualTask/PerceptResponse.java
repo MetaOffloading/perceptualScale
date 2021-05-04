@@ -17,7 +17,7 @@ public class PerceptResponse {
 		PerceptDisplay.panel.remove(PerceptDisplay.responseLayer);
         PerceptDisplay.panel.remove(PerceptDisplay.fixLayer);
         PerceptDisplay.panel.remove(PerceptDisplay.grid2Layer);
-
+		
         if (PerceptTrial.response == PerceptTrial.correctResponse) {
         	PerceptTrial.correct = true;
             PerceptBlock.nCorrect++;
@@ -34,6 +34,7 @@ public class PerceptResponse {
         data = data + PerceptTrial.response + ",";
         data = data + PerceptTrial.correct + ",";
         data = data + PerceptTrial.RT + ",";
+        data = data + PerceptTrial.confidence + ",";
         data = data + (int) (responseTimeStamp.getTime() - PerceptBlock.blockStart.getTime());
         
         PHP.logData("perceptTrial", data, false);

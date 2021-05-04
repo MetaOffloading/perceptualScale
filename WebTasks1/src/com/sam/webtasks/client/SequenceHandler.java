@@ -18,17 +18,11 @@
 //SequenceHandler.SetLoop(0,false) will switch to the main loop,
 //continuing from where we left off.
 
-//TODO:
-//scroll
-//data output
-//resume where you left off
-
 package com.sam.webtasks.client;
 
 import java.util.ArrayList;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sam.webtasks.basictools.CheckIdExists;
 import com.sam.webtasks.basictools.CheckScreenSize;
@@ -39,23 +33,22 @@ import com.sam.webtasks.basictools.InfoSheet;
 import com.sam.webtasks.basictools.Initialise;
 import com.sam.webtasks.basictools.Names;
 import com.sam.webtasks.basictools.PHP;
-import com.sam.webtasks.basictools.ProgressBar;
 import com.sam.webtasks.basictools.Slider;
 import com.sam.webtasks.basictools.TimeStamp;
 import com.sam.webtasks.iotask1.IOtask1Block;
 import com.sam.webtasks.iotask1.IOtask1BlockContext;
+import com.sam.webtasks.iotask1.IOtask1DisplayParams;
 import com.sam.webtasks.iotask1.IOtask1InitialiseTrial;
 import com.sam.webtasks.iotask1.IOtask1RunTrial;
 import com.sam.webtasks.iotask2.IOtask2Block;
 import com.sam.webtasks.iotask2.IOtask2BlockContext;
 import com.sam.webtasks.iotask2.IOtask2RunTrial;
 import com.sam.webtasks.perceptualTask.PerceptBlock;
-import com.sam.webtasks.timeBasedOffloading.TimeBlock;
 import com.sam.webtasks.iotask2.IOtask2InitialiseTrial;
 import com.sam.webtasks.iotask2.IOtask2PreTrial;
 
 public class SequenceHandler {
-	public static void Next() {	
+	public static void Next() {
 		// move forward one step in whichever loop we are now in
 		sequencePosition.set(whichLoop, sequencePosition.get(whichLoop) + 1);
 
@@ -66,260 +59,53 @@ public class SequenceHandler {
 			 * The code here defines the main sequence of events in the experiment *
 			 **********************************************************************/
 			case 1:
-				SequenceHandler.SetPosition(17);
-				SequenceHandler.Next();
-				/*
-				String data = TimeStamp.Now() + ",";
-				data = data + Counterbalance.getFactorLevel("startingCondition") + ",";
-				data = data + Counterbalance.getFactorLevel("buttonPositions") + ",";
-				data = data + Counterbalance.getFactorLevel("buttonColours") + ",";
-				data = data + SessionInfo.prolificExperimentCode;
-				
-				PHP.logData("start", data, true);*/
+				ClickPage.Run("Now you will get 5 easy trials of the number task. You will not get confidence ratings.<br><br>"
+						+ "Click on the grid with more filled squares", "Next");
 				break;
 			case 2:
-				ClickPage.Run(Instructions.Get(10), "Next");
+				// initialise the block
+				PerceptBlock.Init();
+
+				// configure the block
+				PerceptBlock.nTrials = 5;
+				PerceptBlock.getConfidence = false;
+				PerceptBlock.task = Names.PERCEPT_NUMBER;
+
+				// run the block
+				PerceptBlock.Run();
 				break;
 			case 3:
-				TimeBlock.Init();
-				TimeBlock.blockDuration=-10;
-				TimeBlock.clockVisible=false;
-				TimeBlock.offloadButtonVisible=false;
-				TimeBlock.targetInstructionInterval = -1; //don't present any targets
-				TimeBlock.blockNumber=-1;
-				TimeBlock.Run();
+				ClickPage.Run("You got " + PerceptBlock.nCorrect + " out of 5 correct. <br><br>"
+						+ "Now you will get 5 easy trials of the contrast task. You will get confidence ratings. Click on the grid "
+						+ "with higher contrast", "Next");
 				break;
 			case 4:
-				if ((TimeBlock.nBackNonMatchCorr==0)|(TimeBlock.nBackMatchCorr==0)) {
-					SequenceHandler.SetPosition(SequenceHandler.GetPosition()-2);
-					
-					ClickPage.Run("Your accuracy was too low", "Try again");
-				} else {
-					ClickPage.Run(Instructions.Get(20), "Next");
-				}
+				PerceptBlock.Init();
+
+				PerceptBlock.nTrials = 5;
+				PerceptBlock.getConfidence = true;
+				PerceptBlock.task = Names.PERCEPT_CONTRAST;
+
+				PerceptBlock.Run();
 				break;
 			case 5:
-				TimeBlock.Init();
-				TimeBlock.blockDuration=25;
-				TimeBlock.offloadButtonVisible=false;
-				TimeBlock.defaultPMintervals=false;
-				TimeBlock.PMinterval_list.add(10);
-				TimeBlock.blockNumber=-2;
-				TimeBlock.Run();
+				ClickPage.Run("You got " + PerceptBlock.nCorrect + " out of 5 correct. <br><br>"
+						+ "Now you will get 50 trials of the number task. This time it will adjust the "
+						+ "difficulty as you do the task with a staircase procedure", "Next");
 				break;
 			case 6:
-				if (TimeBlock.PMhits==0) {
-					SequenceHandler.SetPosition(SequenceHandler.GetPosition()-3);
-					
-					//we set the nBack accuracy to greater than 0, so that the
-					//practice session for this task does not get triggered again
-					TimeBlock.nBackNonMatchCorr=1;
-					TimeBlock.nBackMatchCorr=1;
-					
-					ClickPage.Run("You didn't remember to press the spacebar.", "Try again");
-				} else {
-					ClickPage.Run(Instructions.Get(30),  "Next");
-				}
+				PerceptBlock.Init();
+
+				PerceptBlock.nTrials = 50;
+				PerceptBlock.getConfidence = true;
+				PerceptBlock.task = Names.PERCEPT_NUMBER;
+				PerceptBlock.adjustDifficulty = true;
+
+				PerceptBlock.Run();
 				break;
 			case 7:
-				TimeBlock.Init();
-				TimeBlock.blockDuration=65;
-				TimeBlock.offloadButtonVisible=false;
-				TimeBlock.defaultPMintervals=false;
-				TimeBlock.PMinterval_list.add(10);
-				TimeBlock.PMinterval_list.add(10);
-				TimeBlock.PMinterval_list.add(10);
-				TimeBlock.blockNumber=-3;
-				TimeBlock.Run();
-				break;
-			case 8:
-				Slider.Run(Instructions.Get(40), "0%", "100%");
-				break;
-			case 9:
-				PHP.logData("slider_10s", ""+Slider.getSliderValue(), true);
-				break;
-			case 10:
-				ClickPage.Run(Instructions.Get(50),  "Next");
-				break;
-			case 11:
-				TimeBlock.Init();
-				TimeBlock.blockDuration=95;
-				TimeBlock.offloadButtonVisible=false;
-				TimeBlock.defaultPMintervals=false;
-				TimeBlock.PMinterval_list.add(20);
-				TimeBlock.PMinterval_list.add(20);
-				TimeBlock.PMinterval_list.add(20);
-				TimeBlock.blockNumber=-4;
-				TimeBlock.Run();
-				break;
-			case 12:
-				Slider.Run(Instructions.Get(60), "0%", "100%");
-				break;
-			case 13:
-				PHP.logData("slider_20s",  ""+Slider.getSliderValue(),  true);
-				break;
-			case 14:
-				ClickPage.Run(Instructions.Get(70),  "Next");
-				break;
-			case 15:
-				TimeBlock.Init();
-				TimeBlock.blockDuration=125;
-				TimeBlock.offloadButtonVisible=false;
-				TimeBlock.defaultPMintervals=false;
-				TimeBlock.PMinterval_list.add(30);
-				TimeBlock.PMinterval_list.add(30);
-				TimeBlock.PMinterval_list.add(30);
-				TimeBlock.blockNumber=-5;
-				TimeBlock.Run();
-				break;
-			case 16:
-				Slider.Run(Instructions.Get(80), "0%", "100%");
-				break;
-			case 17:
-				PHP.logData("slider_30s",  ""+Slider.getSliderValue(),  true);
-				break;
-			case 18:
-				ClickPage.Run(Instructions.Get(90), "Next");
-				break;
-			case 19:
-				TimeBlock.Init();
-				TimeBlock.blockDuration=35;
-				TimeBlock.defaultPMintervals=false;
-				TimeBlock.PMinterval_list.add(20);
-				TimeBlock.blockNumber=-6;
-				TimeBlock.Run();
-				break;
-			case 20:
-				if (TimeBlock.offloadButtonOperated==false) {
-					SequenceHandler.SetPosition(SequenceHandler.GetPosition()-2);
-					ClickPage.Run("You didn't set a reminder",  "Try again");
-				} else {
-					ClickPage.Run(Instructions.Get(100), "Next");		
-				}
-				break;
-			case 21:
-				ProgressBar.Initialise();
-				ProgressBar.SetProgress(1,8);
-				ProgressBar.Show();
-
-				TimeBlock.Init();
-				TimeBlock.blockNumber=1;
-				
-				if ((Counterbalance.getFactorLevel("startingCondition")+TimeBlock.blockNumber) % 2 == 0) {
-					TimeBlock.offloadButtonVisible=false;
-				}
-				
-				TimeBlock.Run();
-				break;
-			case 22:
-				ProgressBar.SetProgress(2,8);
-				
-				ClickPage.Run(Instructions.Get(110), "Next");
-				break;
-			case 23:
-				TimeBlock.Init();
-				TimeBlock.blockNumber=2;
-				
-				if ((Counterbalance.getFactorLevel("startingCondition")+TimeBlock.blockNumber) % 2 == 0) {
-					TimeBlock.offloadButtonVisible=false;
-				}
-
-				TimeBlock.Run();
-				break;
-			case 24:
-				ProgressBar.SetProgress(3,8);
-				
-				ClickPage.Run(Instructions.Get(110), "Next");
-				break;
-			case 25:
-				TimeBlock.Init();
-				TimeBlock.blockNumber=3;
-				
-				if ((Counterbalance.getFactorLevel("startingCondition")+TimeBlock.blockNumber) % 2 == 0) {
-					TimeBlock.offloadButtonVisible=false;
-				}
-				
-				TimeBlock.Run();
-				break;
-			case 26:
-				ProgressBar.SetProgress(4,8);
-				
-				ClickPage.Run(Instructions.Get(110), "Next");
-				break;
-			case 27:
-				TimeBlock.Init();
-				TimeBlock.blockNumber=4;
-				
-				if ((Counterbalance.getFactorLevel("startingCondition")+TimeBlock.blockNumber) % 2 == 0) {
-					TimeBlock.offloadButtonVisible=false;
-				}
-				
-				TimeBlock.Run();
-				break;
-			case 28:
-				ProgressBar.SetProgress(5,8);
-				
-				ClickPage.Run(Instructions.Get(110), "Next");
-				break;
-			case 29:
-				TimeBlock.Init();
-				TimeBlock.blockNumber=5;
-				
-				if ((Counterbalance.getFactorLevel("startingCondition")+TimeBlock.blockNumber) % 2 == 0) {
-					TimeBlock.offloadButtonVisible=false;
-				}
-				
-				TimeBlock.Run();
-				break;
-			case 30:
-				ProgressBar.SetProgress(6,8);
-				
-				ClickPage.Run(Instructions.Get(110), "Next");
-				break;
-			case 31:
-				TimeBlock.Init();
-				TimeBlock.blockNumber=6;
-				
-				if ((Counterbalance.getFactorLevel("startingCondition")+TimeBlock.blockNumber) % 2 == 0) {
-					TimeBlock.offloadButtonVisible=false;
-				}
-				
-				ProgressBar.SetProgress(TimeBlock.blockNumber,7);
-				
-				TimeBlock.Run();
-				break;
-			case 32:
-				ProgressBar.SetProgress(7, 8);
-				Slider.Run(Instructions.Get(120), "0%", "100%");
-				break;
-			case 33:
-				PHP.logData("slider_10s_end", ""+Slider.getSliderValue(), true);
-				break;
-			case 34:
-				Slider.Run(Instructions.Get(130), "0%", "100%");
-				break;
-			case 35:
-				PHP.logData("slider_20s_end", ""+Slider.getSliderValue(), true);
-				break;
-			case 36:
-				Slider.Run(Instructions.Get(140), "0%", "100%");
-				break;
-			case 37:
-				PHP.logData("slider_30s_end", ""+Slider.getSliderValue(), true);
-				break;
-			case 38:
-				String data2 = TimeStamp.Now() + ",";
-				data2 = data2 + SessionInfo.prolificExperimentCode + ",";
-				data2 = data2 + Counterbalance.getFactorLevel("startingCondition") + ",";
-				data2 = data2 + SessionInfo.gender + ",";
-				data2 = data2 + SessionInfo.age;
-				
-				PHP.UpdateStatus("finished");
-				PHP.logData("finish", data2, true);
-				break;
-			case 39:
-				ProgressBar.SetProgress(8, 8);
-				ClickPage.Run(Instructions.Get(150), "nobutton");
+				ClickPage.Run("You got " + PerceptBlock.nCorrect + " out of 50 correct.<br><br>"
+						+ "You have now finished the demo.", "End");
 				break;
 			}
 			break;
@@ -347,7 +133,8 @@ public class SequenceHandler {
 				PHP.CheckStatus();
 				break;
 			case 4:
-				// check whether this participant ID has been used to access a previous experiment
+				// check whether this participant ID has been used to access a previous
+				// experiment
 				PHP.CheckStatusPrevExp();
 				break;
 			case 5:
@@ -358,21 +145,21 @@ public class SequenceHandler {
 				CheckScreenSize.Run(SessionInfo.minScreenSize, SessionInfo.minScreenSize);
 				break;
 			case 6:
-				if (SessionInfo.runInfoConsentPages) { 
+				if (SessionInfo.runInfoConsentPages) {
 					InfoSheet.Run(Instructions.InfoText());
 				} else {
 					SequenceHandler.Next();
 				}
 				break;
 			case 7:
-				if (SessionInfo.runInfoConsentPages) { 
+				if (SessionInfo.runInfoConsentPages) {
 					Consent.Run();
 				} else {
 					SequenceHandler.Next();
 				}
 				break;
 			case 8:
-				//record the participant's counterbalancing condition in the status table				
+				// record the participant's counterbalancing condition in the status table
 				if (!SessionInfo.resume) {
 					PHP.UpdateStatus("" + Counterbalance.getCounterbalancingCell() + ",1,0,0,0,0");
 				} else {
@@ -388,8 +175,8 @@ public class SequenceHandler {
 		case 2: // IOtask1 loop
 			switch (sequencePosition.get(2)) {
 			/*************************************************************
-			 * The code here defines the sequence of events in subloop 2 *
-			 * This runs a single trial of IOtask1                       *
+			 * The code here defines the sequence of events in subloop 2 * This runs a
+			 * single trial of IOtask1 *
 			 *************************************************************/
 			case 1:
 				// first check if the block has ended. If so return control to the main sequence
@@ -417,33 +204,34 @@ public class SequenceHandler {
 				break;
 			}
 			break;
-		case 3: //IOtask2 loop
+		case 3: // IOtask2 loop
 			switch (sequencePosition.get(3)) {
 			/*************************************************************
-			 * The code here defines the sequence of events in subloop 3 *
-			 * This runs a single trial of IOtask2                       *
+			 * The code here defines the sequence of events in subloop 3 * This runs a
+			 * single trial of IOtask2 *
 			 *************************************************************/
 			case 1:
 				// first check if the block has ended. If so return control to the main sequence
 				// handler
 				IOtask2Block block = IOtask2BlockContext.getContext();
-				
+
 				if (block.currentTrial == block.nTrials) {
-					SequenceHandler.SetLoop(0,  false);
+					SequenceHandler.SetLoop(0, false);
 				}
-				
+
 				SequenceHandler.Next();
 				break;
 			case 2:
 				IOtask2InitialiseTrial.Run();
 				break;
-			case 3:;
-				//present the pre-trial choice if appropriate
+			case 3:
+				;
+				// present the pre-trial choice if appropriate
 				if (IOtask2BlockContext.currentTargetValue() > -1) {
 					IOtask2PreTrial.Run();
-				} else { //otherwise just skip to the start of the block
-					if ((IOtask2BlockContext.getTrialNum() > 0)&&(IOtask2BlockContext.countdownTimer())) {
-						//if we're past the first trial and there's a timer, click to begin
+				} else { // otherwise just skip to the start of the block
+					if ((IOtask2BlockContext.getTrialNum() > 0) && (IOtask2BlockContext.countdownTimer())) {
+						// if we're past the first trial and there's a timer, click to begin
 						ClickPage.Run("Ready?", "Continue");
 					} else {
 						SequenceHandler.Next();
@@ -451,11 +239,11 @@ public class SequenceHandler {
 				}
 				break;
 			case 4:
-				if (IOtask2BlockContext.getNTrials() == -1) { //if nTrials has been set to -1, we quit before running
-					SequenceHandler.SetLoop(0,  false);
+				if (IOtask2BlockContext.getNTrials() == -1) { // if nTrials has been set to -1, we quit before running
+					SequenceHandler.SetLoop(0, false);
 					SequenceHandler.Next();
 				} else {
-					//otherwise, run the trial
+					// otherwise, run the trial
 					IOtask2RunTrial.Run();
 				}
 				break;
@@ -463,14 +251,14 @@ public class SequenceHandler {
 				IOtask2PostTrial.Run();
 				break;
 			case 6:
-				//we have reached the end, so we need to restart the loop
-				SequenceHandler.SetLoop(3,  true);
+				// we have reached the end, so we need to restart the loop
+				SequenceHandler.SetLoop(3, true);
 				SequenceHandler.Next();
 				break;
 			}
 		}
 	}
-	
+
 	private static ArrayList<Integer> sequencePosition = new ArrayList<Integer>();
 	private static int whichLoop;
 
@@ -486,7 +274,7 @@ public class SequenceHandler {
 			sequencePosition.set(whichLoop, 0);
 		}
 	}
-	
+
 	// get current loop
 	public static int GetLoop() {
 		return (whichLoop);
@@ -501,7 +289,7 @@ public class SequenceHandler {
 	public static int GetPosition() {
 		return (sequencePosition.get(whichLoop));
 	}
-	
+
 	// get current position from particular loop
 	public static int GetPosition(int nLoop) {
 		return (sequencePosition.get(nLoop));

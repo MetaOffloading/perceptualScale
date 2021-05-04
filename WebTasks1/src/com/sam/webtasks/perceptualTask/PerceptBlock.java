@@ -15,6 +15,9 @@ public class PerceptBlock {
 	//adjust difficulty?
 	public static boolean adjustDifficulty;
 	
+	//ask for confidence ratings?
+	public static boolean getConfidence;
+	
 	//how many trials?
 	public static int nTrials;
 	
@@ -50,6 +53,7 @@ public class PerceptBlock {
 		task = Names.PERCEPT_NUMBER;
 		difficulty = 100;
 		adjustDifficulty = false;
+		getConfidence = false;
 		nTrials = 1;		
 		trial = 1;
 		block = 1;
